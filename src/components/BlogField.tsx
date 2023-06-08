@@ -30,7 +30,7 @@ const BlogField = () => {
       {retrieveData?.map((user, index) => (
         <Card
           key={index}
-          className='w-[489px]'>
+          className='w-full md:w-[489px]'>
           <CardHeader className='gap-3'>
             <CardTitle>
               {user.title}

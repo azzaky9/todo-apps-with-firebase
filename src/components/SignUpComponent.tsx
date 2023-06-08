@@ -38,7 +38,7 @@ const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
   const signUp = () => {
     createUserWithEmailAndPassword(auth, input.email, input.password)
       .then((userCredential) => {
-        console.log(userCredential);
+        return userCredential;
       })
       .catch((e: Error) => {
         console.log(e.message);
@@ -62,8 +62,8 @@ const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
   const renderTextDynamic = componentModel === "SignUp" ? "Sign Up" : "Sign In";
 
   return (
-    <div className='h-screen p-16 grid place-content-center space-y-5'>
-      <Card className='w-[463px]'>
+    <div className='h-screen grid place-content-center space-y-5 bg-zinc-500'>
+      <Card className='sm:w-full md:w-[420px] py-5'>
         <CardHeader className='text-center'>
           <CardTitle className='text-xl'>{renderTextDynamic}</CardTitle>
           {componentModel === "SignUp" ? (
