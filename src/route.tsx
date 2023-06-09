@@ -1,13 +1,18 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import SignUpScreen from "./pages/SIgnUpScreen";
 import SignInScreen from "./pages/SignInScreen";
-import HomeScreen from "./pages/HomeScreen";
 import AddNewPostScreen from "./pages/AddNewPostScreen";
+import RootLayouts from "./layouts/RootLayouts";
+import RenderPost from "./components/RenderPost";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to='/signup' />,
+    element: <RootLayouts />,
+  },
+  {
+    path: "/:IdPost",
+    element: <RenderPost />,
   },
   {
     path: "/signup",
@@ -16,10 +21,6 @@ const router = createBrowserRouter([
   {
     path: "/signin",
     element: <SignInScreen />,
-  },
-  {
-    path: "/homepage",
-    element: <HomeScreen />,
   },
   {
     path: "/add-new-post",

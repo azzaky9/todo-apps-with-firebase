@@ -1,11 +1,13 @@
 import { ChangeEvent, useState } from "react";
 import { Card, CardContent, CardHeader, CardDescription, CardTitle, CardFooter } from "./ui/card";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { auth, db } from "@/firebase-config";
 import { Label } from "./ui/label";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 type Todo = {
   headline: string;
@@ -26,7 +28,7 @@ const NewPost = () => {
   };
 
   const user = auth.currentUser;
-  const uuid = user?.uid || "";
+  const uuid = uuidv4() || "";
   const email = user?.email || "";
 
   const onSubmitBlog = async () => {
@@ -41,7 +43,7 @@ const NewPost = () => {
       }),
     })
       .then(() => {
-        navigate("/homepage");
+        navigate("/");
       })
       .catch((e) => {
         console.log(e.message);
@@ -58,6 +60,7 @@ const NewPost = () => {
         <CardContent className='flex flex-col gap-5'>
           <Label htmlFor='headline'>Headline</Label>
           <Input
+            autoComplete='off'
             className='focus-visible:ring-offset-0'
             type='text'
             value={blogpost.headline}
@@ -65,7 +68,7 @@ const NewPost = () => {
             onChange={handleBlogPost}
           />
           <Label>Description</Label>
-          <textarea
+          <Textarea
             className='focus-visible:ring-offset-0'
             value={blogpost.description}
             name='description'

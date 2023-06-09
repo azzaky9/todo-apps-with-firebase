@@ -1,9 +1,11 @@
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase-config";
 import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardDescription, CardHeader, CardFooter } from "./ui/card";
+import { RxInfoCircled } from "react-icons/rx";
+import { Link } from "react-router-dom";
 
-interface TRetrieveData {
+export interface TRetrieveData {
   id: string;
   title: string;
   description: string;
@@ -26,20 +28,27 @@ const BlogField = () => {
   }, []);
 
   return (
-    <div className='h-screen w-full flex flex-col gap-3 items-center'>
+    <div className='p-10 h-[1000px] flex flex-col gap-3 items-center'>
       {retrieveData?.map((user, index) => (
         <Card
           key={index}
-          className='w-full md:w-[489px]'>
+          className='w-full md:w-[480px] lg:w-[1000px] '>
           <CardHeader className='gap-3'>
-            <CardTitle>
-              {user.title}
-              <span className='font-normal text-rose-800 text-sm ps-2'>
-                Di Post Oleh: {user.email}
-              </span>
-            </CardTitle>
-            <CardTitle className='font-normal'>{user.description}</CardTitle>
+            <div>
+              <h2
+                className='font-semibold text-lg
+              '>
+                {user.title}
+              </h2>
+              <span className='text-rose-800 text-sm'>dipost oleh: {user.email}</span>
+            </div>
+            <CardDescription>{user.description}</CardDescription>
           </CardHeader>
+          <CardFooter>
+            <Link to={`/${user.id}`}>
+              <RxInfoCircled className='text-2xl text-black hover:cursor-pointer' />
+            </Link>
+          </CardFooter>
         </Card>
       ))}
     </div>

@@ -12,22 +12,47 @@ import {
   CardFooter,
   CardTitle,
 } from "@/components/ui/card";
-import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export type SignInputProps = {
   componentModel: "SignUp" | "SignIn";
 };
 
+type ErrorInfoTypes = {
+  errorCode: string;
+  errorMessage: string;
+};
+
 const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
   const [input, setInput] = useState({ email: "", password: "" });
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [err, setErr] = useState("");
+  const [errorInfo, setErrorInfo] = useState<ErrorInfoTypes>({
+    errorCode: "",
+    errorMessage: "",
+  });
+
+  const { toast } = useToast();
 
   const navigate = useNavigate();
 
+  const mountToastSuccess = () => {
+    toast({
+      title: "Succesfully Created Your Account ",
+      description: "Please Log in with your email and password you've created",
+      action: (
+        <ToastAction altText='Log In'>
+          <Navigate to='/signin' />
+          Log In
+        </ToastAction>
+      ),
+    });
+  };
+
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setErr("");
     const { name, value } = e.target;
     setInput((prevState) => ({
       ...prevState,
@@ -37,11 +62,12 @@ const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
 
   const signUp = () => {
     createUserWithEmailAndPassword(auth, input.email, input.password)
-      .then((userCredential) => {
-        return userCredential;
+      .then(() => {
+        mountToastSuccess();
+        setInput({ email: "", password: "" });
       })
-      .catch((e: Error) => {
-        console.log(e.message);
+      .catch((e) => {
+        setErrorInfo({ ...errorInfo, errorCode: e.code, errorMessage: e.message });
       });
   };
 
@@ -49,33 +75,41 @@ const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
     signInWithEmailAndPassword(auth, input.email, input.password)
       .then((userCredential) => {
         console.log(userCredential);
-        navigate("/homepage");
+        navigate("/");
       })
       .catch((e) => {
-        const errorCode = e.code;
-        // const errorMsg = e.message;
-
-        setErr(errorCode);
+        return e;
       });
   };
 
   const renderTextDynamic = componentModel === "SignUp" ? "Sign Up" : "Sign In";
 
   return (
-    <div className='h-screen grid place-content-center space-y-5 bg-zinc-500'>
-      <Card className='sm:w-full md:w-[420px] py-5'>
+    <div className='h-screen grid place-content-center space-y-5 bg-blue-950'>
+      <Card className='sm:w-full md:w-[420px]  py-5'>
         <CardHeader className='text-center'>
-          <CardTitle className='text-xl'>{renderTextDynamic}</CardTitle>
-          {componentModel === "SignUp" ? (
-            <CardDescription>
-              If you already have account please{" "}
-              <Link
-                to='/signin'
-                className='text-rose-600 font-bold hover:underline'>
-                Log in
-              </Link>
-            </CardDescription>
-          ) : null}
+          <CardTitle className='text-2xl'>{renderTextDynamic}</CardTitle>
+          <CardDescription>
+            {componentModel === "SignUp" ? (
+              <>
+                Already have account? please{" "}
+                <Link
+                  to='/signin'
+                  className='text-rose-600 font-bold hover:underline '>
+                  Log in
+                </Link>
+              </>
+            ) : (
+              <>
+                Not already have account?
+                <Link
+                  to='/signup'
+                  className='text-rose-600 font-bold hover:underline pl-2'>
+                  Signup
+                </Link>
+              </>
+            )}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Label
@@ -92,7 +126,7 @@ const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
             autoComplete='off'
             onChange={handleInput}
           />
-          <span className='text-red-600 text-xs block mb-5'>{err}</span>
+          <span className='text-red-600 text-xs block mb-5'>{errorInfo.errorMessage}</span>
           <Label htmlFor='password'>Password</Label>
           <div className='relative'>
             <Input
@@ -119,6 +153,7 @@ const SignUpComponent: React.FC<SignInputProps> = ({ componentModel }) => {
             onClick={componentModel === "SignUp" ? signUp : signIn}>
             {renderTextDynamic}
           </Button>
+          <Toaster />
         </CardFooter>
       </Card>
     </div>

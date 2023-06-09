@@ -78,4 +78,12 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  ::-webkit-scrollbar {
+    @apply w-2 bg-zinc-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-rose-500 rounded-xl hover:bg-rose-400 transition-all duration-300 hover:cursor-pointer;
+  }
 }

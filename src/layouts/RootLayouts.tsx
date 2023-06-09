@@ -1,10 +1,11 @@
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase-config";
-import { useNavigate, Link } from "react-router-dom";
-import BlogField from "./BlogField";
+import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
+import BlogField from "@/components/BlogField";
 
-const HomeComponent = () => {
+const RootLayouts = () => {
+  const location = useLocation();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -34,9 +35,9 @@ const HomeComponent = () => {
           Log Out
         </Button>
       </div>
-      <BlogField />
+      {location.pathname === "/" ? <BlogField /> : <Outlet />}
     </div>
   );
 };
 
-export default HomeComponent;
+export default RootLayouts;
